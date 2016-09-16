@@ -1,0 +1,45 @@
+<table class="table table-bordered table-striped">
+    <thead>
+        <h3>Attributes</h3>
+        <tr>
+            <th>Name</th>
+            <th>X</th>
+            <th>Y</th>
+            <th>Size</th>
+            <th>Rotate/scale</th>
+            <th>Double size</th>
+            <th>Disabled</th>
+            <th>Mode</th>
+            <th>Mosaic</th>
+            <th>Colors</th>
+            <th>Scale param</th>
+            <th>Horizontal flip</th>
+            <th>Vertical flip</th>
+            <th>Tile offset</th>
+            <th>Priority</th>
+            <th>Palette index</th>
+            <th><button class="btn btn-sm btn-danger" ng-click="attributeEntries.splice( 0, attributeEntries.length )">Remove all</button></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="entry in attributeEntries">
+            <td>{{ entry.name || ( "id: " + $index ) }}</td>
+            <td>{{ entry.attr1.x }}</td>
+            <td>{{ entry.attr0.y }}</td>
+            <td>{{ entry.size }}</td>
+            <td>{{ entry.attr0.rotScale }}</td>
+            <td>{{ entry.attr0.doubleSize }}</td>
+            <td>{{ entry.attr0.disabled }}</td>
+            <td>{{ entry.attr0.mode }}</td>
+            <td>{{ entry.attr0.mosaic }}</td>
+            <td>{{ entry.attr0.colors }}</td>
+            <td>{{ entry.attr1.scaleParam }}</td>
+            <td>{{ entry.attr1.horizontalFlip }}</td>
+            <td>{{ entry.attr1.verticalFlip }}</td>
+            <td>{{ entry.attr2.tileOffset }}</td>
+            <td>{{ entry.attr2.priority }}</td>
+            <td>{{ entry.attr2.paletteIndex }}</td>
+            <td><button class="btn btn-sm btn-warning" ng-click="removeEntry( $index )">Remove</button></td>
+        </tr>
+    </tbody>
+</table>
