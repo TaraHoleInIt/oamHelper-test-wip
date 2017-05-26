@@ -1,0 +1,27 @@
+<style>
+    .ng-invalid { background-color: lightpink; }
+    span.error { color: red; font-weight: bold; }
+</style>
+<form name="attributeForm" novalidate>
+    <div class="panel">
+        <h3 class="panel-header">OAM Attributes:</h3>
+        <div class="form-group">
+            <label>Name/identifier</label>
+            <input class="form-inline" ng-model="inputAttributeName" />
+            <span style="color: lightblue">(Optional)</span>
+        </div>
+        <div class="form-group" ng-repeat="i in [ 0, 1, 2 ]">
+            <label>Attribute {{ i }}</label>
+            <input class="form-inline" ng-model="inputAttributes[ i ]" ng-style="styleFromValidInput( inputAttributes[ i ] )" />
+            <span class="error" ng-show="! isInputValid ( inputAttributes[ i ] )">Expecting numerical value between 0 and 65535 in decimal or hexadecimal</span>
+        </div>
+        <div class="item">
+            <button class="btn btn-sm btn-primary" ng-disabled="! areInputsValid( )" ng-click="addAttributeEntry( )">Add</button>
+            <button class="btn btn-sm btn-warning" ng-click="clearInputs( )">Clear inputs</button>
+        </div>
+    </div>
+</form>
+<div>
+    <div ng-include="'views/tableview.html'">
+    </div>
+</div>
