@@ -2,142 +2,29 @@
 <html ng-app="oamHelperApp">
     <head>
         <title>OAM Helper/disassembler</title>
-        <link href="bootstrap.css" rel="stylesheet" />
-        <link href="bootstrap-theme.css" rel="stylesheet" />
-        <script src="angular.js"></script>
-        <script>
-            var oamHelperApp = angular.module( "oamHelperApp", [ ] );
-
-            oamHelperApp.constant( 'tableView', "views/tableview.html" );
-
-            oamHelperApp.controller( "oamHelperCtrl", function( $scope, attr0Service, attr1Service, attr2Service, tableView ) {
-                $scope.getCurrentView = function( ) {
-                    return tableView;
-                }
-
-                $scope.styleFromValidInput = function( input ) {
-                    var value = parseInt( input );
-                    var result = { }
-
-                    if ( isNaN( value ) || value < 0 || value > 65535 ) {
-                        result[ "background-color" ] = "lightpink";
-                    }
-
-                    return result;
-                }
-
-                $scope.inputAttributes = [ ];
-                $scope.inputAttributes[ 0 ] = 0;
-                $scope.inputAttributes[ 1 ] = 0;
-                $scope.inputAttributes[ 2 ] = 0;
-
-                $scope.attributeEntries = [ ];
-
-                $scope.isInputValid = function( input ) {
-                    var asNumber = parseInt( input );
-
-                    if ( isNaN( asNumber ) || asNumber < 0 || asNumber > 65535 ) {
-                        return false;
-                    }
-
-                    return true;
-                }
-
-                $scope.areInputsValid = function( ) {
-                    for ( var i = 0; i < 3; i++ ) {
-                        if ( ! $scope.isInputValid( $scope.inputAttributes[ i ] ) ) {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
-
-                $scope.addAttributeEntry = function( ) {
-                    var newEntry = {
-                        name: function( ) {
-                            if ( angular.isDefined( $scope.inputAttributeName ) && $scope.inputAttributeName.length > 0 ) {
-                                return $scope.inputAttributeName;
-                            }
-
-                            return undefined;
-                        }( ),
-                        attr0: attr0Service.getAttributes( $scope.inputAttributes[ 0 ] ),
-                        attr1: attr1Service.getAttributes( $scope.inputAttributes[ 1 ] ),
-                        attr2: attr2Service.getAttributes( $scope.inputAttributes[ 2 ] )
-                    };
-
-                    newEntry.size = function( ) {
-                        switch ( newEntry.attr0.shape ) {
-                            case "Square": {
-                                var squareSizes = [ "8x8", "16x16", "32x32", "64x64" ];
-                                return squareSizes[ newEntry.attr1.size ];
-                            }
-                            case "Wide": {
-                                var wideSizes = [ "16x8", "32x8", "32x16", "64x32" ];
-                                return wideSizes[ newEntry.attr1.size ];
-                            }
-                            case "Tall": {
-                                var tallSizes = [ "8x16", "8x32", "16x32", "32x64" ];
-                                return tallSizes[ newEntry.attr1.size ];
-                            }
-                            default: {
-                                return "0x0";
-                            }
-                        };                        
-                    }( );
-
-                    $scope.attributeEntries.push( newEntry );
-                }
-
-                $scope.clearInputs = function( ) {
-                    $scope.inputAttributes[ 0 ] = 0;
-                    $scope.inputAttributes[ 1 ] = 0;
-                    $scope.inputAttributes[ 2 ] = 0;
-                    $scope.inputAttributeName = "";                    
-                }
-
-                $scope.removeEntry = function( index ) {
-                    $scope.attributeEntries.splice( index, 1 );
-                }
-            } );
-        </script>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular-route.js"></script>
+        <script src="controllers/mainCtrl.js"></script>
         <script src="controllers/attr0ctrl.js"></script> 
         <script src="controllers/attr1ctrl.js"></script>
-        <script src="controllers/attr2ctrl.js"></script>    
-        <style>
-            .ng-invalid { background-color: lightpink; }
-            span.error { color: red; font-weight: bold; }
-        </style>
+        <script src="controllers/attr2ctrl.js"></script> 
     </head>
-    <body ng-controller="oamHelperCtrl">
-        <form name="attributeForm" novalidate>
-            <div class="panel">
-                <h3 class="panel-header">OAM Attributes:</h3>
-                <!-- Generate attribute input elements -->
-                <div class="form-group">
-                    <label>Name/identifier</label>
-                    <input class="form-inline" ng-model="inputAttributeName"/>
-                    <span style="color: lightblue">
-                        (Optional)
-                    </span>
+    <body ng-controller="mainCtrl">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <label class="navbar-brand">OAMHelper</label>
                 </div>
-                <div class="form-group" ng-repeat="i in [ 0, 1, 2 ]">
-                    <label>Attribute {{ i }}</label>
-                    <input class="form-inline" ng-model="inputAttributes[ i ]" ng-style="styleFromValidInput( inputAttributes[ i ] )"/>
-                    <span class="error" ng-show="! isInputValid ( inputAttributes[ i ] )">
-                        Expecting numerical value between 0 and 65535 in decimal or hexadecimal
-                    </span>                    
-                </div>
-                <div class="item">
-                    <button class="btn btn-sm btn-primary" ng-disabled="! areInputsValid( )" ng-click="addAttributeEntry( )">Add</button>
-                    <button class="btn btn-sm btn-warning" ng-click="clearInputs( )">Clear inputs</button>
-                </div>
+                <ul class="nav navbar-nav" ng-init="setActive( 'aboutMenu' )">
+                    <li my-menu-id="aboutMenu" ng-click="setActive( 'aboutMenu' )"><a href="#/about">Home/about</a></li>
+                    <li my-menu-id="mainMenu" ng-click="setActive( 'mainMenu' )"><a href="#/main">Main</a></li>
+                </ul>
             </div>
-        </form>
-        <div>
-            <div ng-include="getCurrentView( )">
-            </div>
+        </nav>
+        <div ng-view>
         </div>
     </body>
 </html>
